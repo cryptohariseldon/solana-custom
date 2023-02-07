@@ -673,6 +673,9 @@ pub fn parse_command(
         }
         ("upgrade-nonce-account", Some(matches)) => parse_upgrade_nonce_account(matches),
         // Program Deployment
+        ("deployProof", Some(matches)) => {
+            parse_program_subcommand(matches, default_signer, wallet_manager)
+        }
         ("deploy", Some(_matches)) => clap::Error::with_description(
             "`solana deploy` has been replaced with `solana program deploy`",
             clap::ErrorKind::UnrecognizedSubcommand,
@@ -1090,6 +1093,7 @@ pub fn process_command(config: &CliConfig) -> ProcessResult {
         CliCommand::Program(program_subcommand) => {
             process_program_subcommand(rpc_client, config, program_subcommand)
         }
+
 
         // Stake Commands
 

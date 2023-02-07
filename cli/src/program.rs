@@ -1088,8 +1088,14 @@ fn process_write_buffer(
             );
         }
     }
+    // NEW - Write non-ELF format to Buffer.
 
-    let program_data = read_and_verify_elf(program_location)?;
+    //let program_data = read_and_verify_elf(program_location)?;
+    let mut f = File::open(program_location)?;
+    let mut buffer = Vec::new();
+    // read the whole file
+    f.read_to_end(&mut buffer)?;
+    let program_data = buffer;
     let buffer_data_len = if let Some(len) = max_len {
         len
     } else {
