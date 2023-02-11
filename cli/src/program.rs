@@ -195,7 +195,7 @@ impl ProgramSubCommands for App<'_, '_> {
                 )
                 .subcommand(
                     SubCommand::with_name("write-buffer")
-                        .about("Writes a program into a buffer account")
+                        .about("Writes a program OR BYTES into a buffer account - ")
                         .arg(
                             Arg::with_name("program_location")
                                 .index(1)
@@ -923,7 +923,12 @@ fn process_program_deploy(
     };
 
     let (program_data, program_len) = if let Some(program_location) = program_location {
-        let program_data = read_and_verify_elf(program_location)?;
+        //let program_data = read_and_verify_elf(program_location)?;
+        let mut f = File::open(program_location)?;
+        let mut buffer = Vec::new();
+        // read the whole file
+        f.read_to_end(&mut buffer)?;
+        let program_data = buffer;
         let program_len = program_data.len();
         (program_data, program_len)
     } else if buffer_provided {
@@ -1089,8 +1094,9 @@ fn process_write_buffer(
         }
     }
     // NEW - Write non-ELF format to Buffer.
-
+    println!("checking check elf");
     //let program_data = read_and_verify_elf(program_location)?;
+    println!("bypassed check elf");
     let mut f = File::open(program_location)?;
     let mut buffer = Vec::new();
     // read the whole file
