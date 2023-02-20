@@ -1089,8 +1089,8 @@ fn process_write_buffer(
         }
     }
     // NEW - Write non-ELF format to Buffer.
-
-    //let program_data = read_and_verify_elf(program_location)?;
+    println!("parsing elf");
+    let program_data = read_and_verify_elf(program_location)?;
     let mut f = File::open(program_location)?;
     let mut buffer = Vec::new();
     // read the whole file
@@ -2034,12 +2034,16 @@ fn read_and_verify_elf(program_location: &str) -> Result<Vec<u8>, Box<dyn std::e
         false,
     )
     .unwrap();
+    println!("read");
+
     let executable = Executable::<InvokeContext>::from_elf(&program_data, loader)
         .map_err(|err| format!("ELF error: {err}"))?;
 
+    println!("loaded");
     let _ = VerifiedExecutable::<RequisiteVerifier, InvokeContext>::from_executable(executable)
         .map_err(|err| format!("ELF error: {err}"))?;
 
+    println!("verified");
     Ok(program_data)
 }
 
